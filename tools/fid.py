@@ -59,12 +59,12 @@ def _get_inception_layer(sess):
                   new_shape.append(None)
                 else:
                   new_shape.append(s)
-              o._shape = tf.TensorShape(new_shape)
+              o.set_shape = tf.TensorShape(new_shape)
     return pool3
 #-------------------------------------------------------------------------------
 
 
-def get_activations(images, sess, batch_size=50, verbose=False):
+def get_activations(images, sess, batch_size=1, verbose=False):
     """Calculates the activations of the pool_3 layer for all images.
 
     Params:
@@ -158,7 +158,7 @@ def calculate_frechet_distance(mu1, sigma1, mu2, sigma2, eps=1e-6):
 #-------------------------------------------------------------------------------
 
 
-def calculate_activation_statistics(images, sess, batch_size=50, verbose=False):
+def calculate_activation_statistics(images, sess, batch_size=1, verbose=False):
     """Calculation of the statistics used by the FID.
     Params:
     -- images      : Numpy array of dimension (n_images, hi, wi, 3). The values
@@ -237,13 +237,14 @@ def calculate_fid_given_paths(paths, inception_path):
 if __name__ == "__main__":
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
-    parser.add_argument("path", type=str, nargs=2,
-        help='Path to the generated images or to .npz statistic files')
+#    parser.add_argument("path", type=str, nargs=2,                    
+#        help='Path to the generated images or to .npz statistic files')
     parser.add_argument("-i", "--inception", type=str, default=None,
         help='Path to Inception model (will be downloaded if not provided)')
     parser.add_argument("--gpu", default="", type=str,
         help='GPU to use (leave blank for CPU only)')
     args = parser.parse_args()
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
-    fid_value = calculate_fid_given_paths(args.path, args.inception)
+    paths = ['../data/train/figs', '../data/train/figs']
+    fid_value = calculate_fid_given_paths(paths, args.inception)
     print("FID: ", fid_value)
